@@ -1,3 +1,160 @@
+ruby-defaults (1:2.1.0.4) unstable; urgency=medium
+
+  * move wheezy2jessie upgrade tests to their own control file
+    Now that ruby1.8 is gone from unstable, this actually makes ruby-defaults
+    test suite fail.
+
+ -- Antonio Terceiro <terceiro@debian.org>  Wed, 20 Aug 2014 09:03:42 -0300
+
+ruby-defaults (1:2.1.0.3) unstable; urgency=medium
+
+  * ruby_debian_dev.rb: consolidate information about Ruby interpreters in a
+    single data structure: RubyDebianDev::RUBY_INTERPRETERS.
+    .
+    The existing constants are still there for backwards-compatibility.
+    .
+    Besides the pre-existing information we already had, there is now a
+    `min_ruby_dependency` key, which is the minimum ruby dependency that
+    packages built against that given ruby version should have.
+  * added RubyDebianDev.min_ruby_dependency_for(shared_library) API for querying
+    that piece of data.
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sun, 10 Aug 2014 18:49:12 -0300
+
+ruby-defaults (1:2.1.0.2) unstable; urgency=medium
+
+  * README.Debian: document basic usage instructions to ruby, ruby-dev and
+    ruby-all-dev in package description
+    Closes: #755779
+  * ri: add dependency on documentation package (currently ruby2.1-doc)
+    Closes: #754563
+  * Added 2 functional wheezy → jessie upgrade tests:
+    - wheezy2jessie-apt-listbugs-ruby1.8: installs apt-listbugs and ruby1.8,
+      upgrades to jessie, and checks that apt-listbugs works fine.
+    - wheezy2jessie-ruby-version: installs ruby, upgrades to jessie, and
+      checks that we got Ruby 2.1
+    .
+    These upgrade tests require a patch to autopkgtest that was not released
+    yet, and will be no-ops until autopkgtest gets support for upgrade tests.
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sat, 09 Aug 2014 09:15:53 -0300
+
+ruby-defaults (1:2.1.0.1) unstable; urgency=medium
+
+  [ Christian Hofstaedtler ]
+  * Add Breaks: ruby-debian without ruby2.1 extension (Closes: #747406)
+
+  [ Antonio Terceiro ]
+  * Upload to unstable, switching the default to ruby2.1 and dropping support
+    for ruby2.0 which we are starting to phase out
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sat, 10 May 2014 14:04:38 -0300
+
+ruby-defaults (1:2.1.0.0) experimental; urgency=medium
+
+  * Switch to Ruby 2.1 and drop support for Ruby 2.0
+  * ruby_all_dev.rb now also provides RUBY_API_VERSION for gem2deb to use to
+    determine where to install gemspecs for binary extensions.
+  * debian/tests/smoke-test: check for default gems that are expected to be
+    there (rdoc, rake)
+
+ -- Antonio Terceiro <terceiro@debian.org>  Tue, 06 May 2014 20:02:18 -0300
+
+ruby-defaults (1:2.0.0.2) unstable; urgency=medium
+
+  * Remove Conflicts: irb, rdoc, rubygems; Add Provides: rubygems
+    (Closes: #743780)
+  * Improve handling of migration from alternatives (Closes: #743729)
+    - ruby.preinst: remove alternatives entries
+    - ruby.postinst:
+      + fix any links left pointing to ruby1.8 or ruby1.9.1 making them point
+        back to ruby2.
+      + hack installed ruby1.8.postinst and ruby1.9.1.postinst so they do not
+        re-add the alternatives entries if reconfigured.
+    - debian/triggers: watch /usr/bin/ruby{1.8,1.9.1} so that if the user
+      reinstalls ruby1.8 or ruby1.9.1, ruby.postinst will be executed again.
+
+ -- Antonio Terceiro <terceiro@debian.org>  Tue, 08 Apr 2014 11:38:41 -0300
+
+ruby-defaults (1:2.0.0.1) unstable; urgency=medium
+
+  * Upload to unstable.
+
+ -- Christian Hofstaedtler <zeha@debian.org>  Sun, 30 Mar 2014 17:03:01 +0200
+
+ruby-defaults (1:2.0.0.1~exp3) experimental; urgency=medium
+
+  * ruby-all-dev: migrate from Ruby 1.9.1 and 2.0 to Ruby 2.0 and 2.1
+  * ruby: remove Breaks/Conflicts/Replaces against old interpreter packages
+    as this will force the removal of old interpreters from users' systems
+    (Closes: #740733)
+    .
+    The following upgrade scenarios from wheezy were tested, still work fine,
+    and leave the old interpreters alone:
+    - ruby
+    - ruby + ruby1.8
+    - ruby + apt-listbugs
+    - ruby + ruby1.8 + apt-listbugs
+    - ruby1.8 + apt-listbugs
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sat, 29 Mar 2014 16:12:05 -0300
+
+ruby-defaults (1:2.0.0.1~exp2) experimental; urgency=medium
+
+  * Merge changes from unstable, for newer gem2deb.
+
+ -- Christian Hofstaedtler <zeha@debian.org>  Tue, 04 Feb 2014 23:58:19 +0100
+
+ruby-defaults (1:1.9.3.4) unstable; urgency=medium
+
+  * ruby-all-dev: also depend on the actual interpreters and not only on the
+    -dev packages
+  * ruby-all-dev: ship library with data about supported interpreters
+    - ruby_debian_dev.rb will be be used by gem2deb
+  * Add a simple DEP-8 smoke test
+  * Drop Conflicts/Replaces/Provides on obsolete packages that are not even on
+    squeeze anymore
+
+ -- Antonio Terceiro <terceiro@debian.org>  Wed, 12 Feb 2014 09:33:39 -0300
+
+ruby-defaults (1:1.9.3.3) unstable; urgency=medium
+
+  * Breaks ruby-switch <= 0.1.0 and rbenv <= 0.4.0-1
+    - the mention of `ruby-build` in the previous release was a typo.
+
+ -- Antonio Terceiro <terceiro@debian.org>  Thu, 06 Feb 2014 17:56:55 -0300
+
+ruby-defaults (1:1.9.3.2) unstable; urgency=medium
+
+  * Breaks ruby-build << 0.1.0 and rbenv << 0.4.0-1
+    - The removal of the alternatives entries breaks both packages ability to
+      detect installed interpreters.
+  * Put myself as maintainer, move akira yamada <akira@debian.org> to
+    Uploaders:. Add Christian Hofstaedtler to Uploaders:
+
+ -- Antonio Terceiro <terceiro@debian.org>  Thu, 06 Feb 2014 15:07:57 -0300
+
+ruby-defaults (1:2.0.0.1~exp1) experimental; urgency=medium
+
+  * Upload to experimental.
+  * Switch to Ruby 2.0 as default interpreter
+  * Add myself to Uploaders
+
+ -- Christian Hofstaedtler <zeha@debian.org>  Tue, 04 Feb 2014 23:58:19 +0100
+
+ruby-defaults (1:1.9.3.1) unstable; urgency=medium
+
+  * Switch from cdbs to debhelper
+  * `ruby` now Conflicts with ruby1.8 and rubygems packages, which should be
+    removed from the archive soonish.
+  * Take control of /usr/bin/{erb,testrb,irb,rdoc,gem,ri,ruby} binaries
+    - update-alternatives for /usr/bin/ruby and slave symlinks is not
+      supported anymore.
+    - Those binaries will now be part of this package and will point to the
+      binaries provided by the default Ruby
+
+ -- Antonio Terceiro <terceiro@debian.org>  Sat, 01 Feb 2014 21:55:19 -0300
+
 ruby-defaults (1:1.9.3) unstable; urgency=low
 
   * declare Breaks: apt-listbugs (<< 0.1.6) in ruby package to avoid breaking

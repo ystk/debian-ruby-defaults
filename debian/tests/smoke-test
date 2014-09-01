@@ -1,0 +1,17 @@
+#!/bin/sh
+
+exec 2>&1
+
+set -x
+set -e
+
+ruby -v
+
+gem env
+
+gems=$ADTTMP/gems
+gem list | tee $gems
+
+# some standard gems should be available
+grep rdoc $gems
+grep rake $gems
